@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+import math
 
 #Message type for the position topic
 from turtlesim.msg import Pose
@@ -11,6 +12,10 @@ from geometry_msgs.msg import Twist
 class TurtleControllerNode(Node):
     def __init__(self):
         super().__init__("turtle_controller") 
+
+        #The target Position for the turtle
+        self.target_x = 8
+        self.target_y = 2
 
         self.pose : Pose = None
 
@@ -26,8 +31,45 @@ class TurtleControllerNode(Node):
         self.pose = pose
 
     def control_loop(self):
-        pass
 
+        #If in the begining the or can't get the position value of Turtle the code must not go to the distance computing stage.
+        if self.pose == None:
+            return
+
+        #Computing the distance
+        dist_x = self.target_x - self.pose.x
+        dist_y = self.target_y - self.pose.y
+
+        #Calculating the hypotnese from base and perpendicular
+        distance = math.sqrt((dist_x**2)+(dist_y**2))
+
+        #Now publishing the data stage
+        msg = Twist()
+
+        if distance > 0.5:
+            #Target hasn't reached
+            
+            #A P-Controller that will go with the velocity of "distance"
+            msg.linear.x = 2*distance
+
+            target_theta = math.atan2(dist_y, dist_x)
+            difference = target_theta - self.pose.theta
+
+            #Normalizing the angle
+            if difference > math.pi:
+                difference -= 2*math.pi
+            elif difference < -math.pi:
+                difference += 2*math.pi
+
+            msg.angular.z = 3*difference
+
+        else:
+            #Target reached, Robot is stopped.
+            msg.linear.x = 0.0
+            msg.angular.z = 0.0
+
+        
+        self.vel_publisher.publish(msg)
     
  
  
