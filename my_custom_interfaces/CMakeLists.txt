@@ -13,6 +13,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
   "srv/SetLed.srv"
   "msg/LedPanelState.msg"
+  "msg/Turtle.msg"
+  "msg/TurtleArray.msg"
   
  )
 
