@@ -8,9 +8,11 @@ from functools import partial
 
 #Message type for the Service
 from turtlesim.srv import Spawn
+from turtlesim.srv import Kill
 #Custom Interface import
 from my_custom_interfaces.msg import Turtle
 from my_custom_interfaces.msg import TurtleArray
+from my_custom_interfaces.srv import CatchTurtle
  
  
 class TurtleSpawnerNode(Node):
@@ -23,8 +25,21 @@ class TurtleSpawnerNode(Node):
 
         #Publisher, Services etc
         self.alive_turtles_publisher = self.create_publisher(TurtleArray, "alive_turtles", 10)
+
         self.spawn_client = self.create_client(Spawn, "/spawn")
+        self.kill_client = self.create_client(Kill, "/kill")
+
+        self.catch_service = self.create_service(CatchTurtle, "catch_turtle", self.callback_catch_turtle)
+
+        #Timer
         self.spawn_timer = self.create_timer(3.0, self.spawn_new_turtle)
+
+
+
+    def callback_catch_turtle(self, request: CatchTurtle.Request, response: CatchTurtle.Response):
+        self.call_kill_service(request.name)
+        response.success = True
+        return response
 
 
     #Publishing the alive turtles
@@ -75,8 +90,23 @@ class TurtleSpawnerNode(Node):
 
             self.publish_alive_turtles()
 
+    def call_kill_service(self, turtle_name):
+        while not self.kill_client.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for the Kill Service...")
 
-        
+        request = Kill.Request()
+        request.name = turtle_name
+
+        future = self.kill_client.call_async(request)
+        future.add_done_callback(partial(self.callback_call_kill_service, turtle_name = turtle_name))
+
+    def callback_call_kill_service(self, future, turtle_name):
+        for (i, turtle) in enumerate(self.alive_turtles):
+            if turtle.name == turtle_name:
+                del self.alive_turtles[i]
+                self.publish_alive_turtles()
+                break
+
 
  
  
