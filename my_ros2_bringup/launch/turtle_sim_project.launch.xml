@@ -1,0 +1,11 @@
+<launch>
+
+    <node pkg="turtlesim" exec="turtlesim_node" />
+    <node pkg="turtle_sim_project" exec="spawner">
+        <param from="$(find-pkg-share my_ros2_bringup)/config/turtle_sim_project.yaml"/>
+    </node>
+    <node pkg="turtle_sim_project" exec="controller">
+        <param from="$(find-pkg-share my_ros2_bringup)/config/turtle_sim_project.yaml"/>
+    </node>
+
+</launch>
