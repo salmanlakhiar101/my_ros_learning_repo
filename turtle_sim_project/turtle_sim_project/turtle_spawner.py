@@ -18,10 +18,15 @@ from my_custom_interfaces.srv import CatchTurtle
 class TurtleSpawnerNode(Node):
     def __init__(self):
         super().__init__("turtle_spawner")
+
+        self.declare_parameter("turtle_name_prefix", "Turtle")
+        self.declare_parameter("spawn_frequency", 2.0)
+
         #Veriables etc
-        self.turtle_name_prefix = "Turtle"
+        self.turtle_name_prefix = self.get_parameter("turtle_name_prefix").value
         self.counter = 1
         self.alive_turtles = []
+        self.spawn_frequency = self.get_parameter("spawn_frequency").value
 
         #Publisher, Services etc
         self.alive_turtles_publisher = self.create_publisher(TurtleArray, "alive_turtles", 10)
@@ -32,7 +37,7 @@ class TurtleSpawnerNode(Node):
         self.catch_service = self.create_service(CatchTurtle, "catch_turtle", self.callback_catch_turtle)
 
         #Timer
-        self.spawn_timer = self.create_timer(3.0, self.spawn_new_turtle)
+        self.spawn_timer = self.create_timer((1.0/self.spawn_frequency), self.spawn_new_turtle)
 
 
 

@@ -24,6 +24,9 @@ class TurtleControllerNode(Node):
         #The target Position for the turtle
         self.turtle_to_catch = None
         self.pose : Pose = None
+        
+        self.declare_parameter("closest_turtle_catch", True)
+        self.closest_turtle_catch = self.get_parameter("closest_turtle_catch").value
 
         # Creating a subscriber to the POS topic of the turtle to get the position of Turtle
         self.pos_subscriber = self.create_subscription(Pose, "/turtle1/pose", self.callback_pos, 10)
@@ -42,7 +45,24 @@ class TurtleControllerNode(Node):
 
     def call_back_alive_turtle(self, turtle_list: TurtleArray):
         if len(turtle_list.turtle) > 0:
-            self.turtle_to_catch: Turtle = turtle_list.turtle[0]
+            if self.closest_turtle_catch:
+                closest_turtle = None
+                distance_closest_turtle = None
+
+                for turtle in turtle_list.turtle:
+                    dist_x = turtle.x - self.pose.x
+                    dist_y = turtle.y - self.pose.y
+
+                    distance = math.sqrt((dist_x**2)+(dist_y**2))
+
+                    if distance_closest_turtle == None or distance < distance_closest_turtle:
+                        closest_turtle = turtle
+                        distance_closest_turtle = distance
+
+                self.turtle_to_catch = closest_turtle
+                
+            else:
+                self.turtle_to_catch: Turtle = turtle_list.turtle[0]
     
     def callback_pos(self, pose: Pose):
         self.pose = pose
