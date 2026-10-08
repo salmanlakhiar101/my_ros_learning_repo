@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<robot name="my_robot" xmlns:xacro="https://www.ros.org/wiki/xacro">
+<robot  xmlns:xacro="https://www.ros.org/wiki/xacro">
 
     <!-- ==================== Materials ==================== -->
-    <xacro:include filename="common_materials.xacro"/>
+   
 
     <!-- ==================== Veriables ==================== -->
 
@@ -24,6 +24,7 @@
                 <origin xyz="0 0 0" rpy="${pi/2.0} 0 0"/>
                 <material name="flange_steel"/>
             </visual>
+            <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length}" o_xyz="0 0 0" o_rpy="${pi/2.0} 0 0" />
         </link>
         
     </xacro:macro>
@@ -40,6 +41,7 @@
             <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
             <material name="blue"/>
         </visual>
+        <xacro:box_inertia m="5.0" x="${base_length}" y="${base_width}" z="${base_height}" o_xyz="0 0 ${base_height/2}" o_rpy="0 0 0" />         
     </link>
 
     <link name="base_footprint"/>
@@ -81,6 +83,7 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="flange_steel"/>
         </visual>
+        <xacro:sphere_inertia m="0.5" r="${front_wheel_radius}" o_xyz="0 0 0" o_rpy="0 0 0" />
     </link>
 
     <!-- Base to front Wheel Joint -->

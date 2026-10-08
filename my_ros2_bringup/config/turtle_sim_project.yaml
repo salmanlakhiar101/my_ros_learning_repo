@@ -5,4 +5,4 @@
 /turtle_spawner:
   ros__parameters:
     turtle_name_prefix: "TurtleKing"
-    spawn_frequency: 1.5ss
+    spawn_frequency: 1.5
