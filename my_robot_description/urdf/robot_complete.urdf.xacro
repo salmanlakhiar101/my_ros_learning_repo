@@ -6,5 +6,6 @@
     <xacro:include filename="common_properties.urdf.xacro"/>
     
     <xacro:include filename="my_robot.urdf.xacro"/>
+    <xacro:include filename="my_robot_gazebo_setup.xacro"/>
 
 </robot>

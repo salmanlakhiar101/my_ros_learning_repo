@@ -2,8 +2,6 @@
 
 <robot  xmlns:xacro="https://www.ros.org/wiki/xacro">
 
-    <!-- ==================== Materials ==================== -->
-   
 
     <!-- ==================== Veriables ==================== -->
 
@@ -106,11 +104,10 @@
     </link>
 
     <!-- Base to front Wheel Joint -->
-    <joint name="base_front_wheel_joint" type="continuous">
+    <joint name="base_front_wheel_joint" type="fixed">
         <parent link="base_link"/>
         <child link="front_wheel"/>
         <origin xyz="${base_length/3.0} 0 ${-front_wheel_radius}" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
     </joint>
 
 
