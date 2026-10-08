@@ -2,6 +2,8 @@
 
 <robot xmlns:xacro="https://www.ros.org/wiki/xacro">
 
+
+    <!-- ==================== Inertial Macros ==================== -->
     <xacro:macro name="box_inertia" params="m x y z o_xyz o_rpy">
         <inertial>
             <mass value="${m}"/>
