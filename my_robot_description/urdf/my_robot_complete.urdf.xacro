@@ -8,4 +8,6 @@
     <xacro:include filename="my_robot.urdf.xacro"/>
     <xacro:include filename="my_robot_gazebo_setup.xacro"/>
 
+    <xacro:include filename="my_robot_camera.xacro"/>
+
 </robot>
